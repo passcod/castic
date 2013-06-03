@@ -1,18 +1,5 @@
 require 'parser/ruby18'
-
-class Parser::AST::Node
-  def to_tree
-    puts self.inspect
-    puts self.to_a.inspect
-    self.to_a.map { |n|
-      if n.is_a? Parser::AST::Node
-        n.to_tree
-      else
-        n
-      end
-    }
-  end
-end
+require_relative 'extends/parser'
 
 class Castic
   def initialize(cask)
@@ -22,8 +9,10 @@ class Castic
     @tree = @parsed.to_tree
   end
 
+  attr_reader :tree
+
   def expected_name
-    @file
+    @file.to_s
       .split('/')
       .last
       .split('-')
@@ -33,10 +22,22 @@ class Castic
   end
 
   def name
-    @parsed.children.first.to_a.last.to_s
+    k = @tree.index [nil, :Cask]
+    @tree[k-1][1].to_s
   end
 
-  def consistent_name?
-    expected_name == name
+  def props(key = nil)
+    k = @tree.index [nil, :Cask]
+    body = @tree[k+1]
+    if key
+      body.select { |n|
+        n[1] == key.to_sym
+      }
+    else
+      body
+    end.map { |n|
+      n.last n.length - 1
+    }
   end
 end
+
