@@ -2,14 +2,16 @@ require 'parser/ruby18'
 require_relative 'extends/parser'
 
 class Castic
-  def initialize(cask)
-    @file = cask
-    @source = IO.read cask
+  def initialize(file, type = :Cask)
+    @type = type
+    @file = file
+    @source = IO.read file
     @parsed = Parser::Ruby18.parse @source
     @tree = @parsed.to_tree
   end
 
   attr_reader :tree
+  attr :type
 
   def expected_name
     @file.to_s
@@ -21,14 +23,29 @@ class Castic
       .sub /\.rb$/, ''
   end
 
+  def class_index
+    if @type == :Formula
+      return @tree[1].index [nil, @type]
+    end
+
+    @tree.index [nil, @type]
+  end
+
   def name
-    k = @tree.index [nil, :Cask]
-    @tree[k-1][1].to_s
+    if @type == :Formula
+      @tree[1]
+    else
+      @tree
+    end[class_index-1][1].to_s
   end
 
   def props(key = nil)
-    k = @tree.index [nil, :Cask]
-    body = @tree[k+1]
+    body = if @type == :Formula
+      @tree[1][class_index+1]
+    else
+      @tree[class_index+1]
+    end
+
     if key
       body.select { |n|
         n[1] == key.to_sym

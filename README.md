@@ -4,6 +4,8 @@ Static parser for [casks](/phinze/homebrew-cask)
 Parses casks statically (and safely) and offers their contents
 to anyone who asks the right questions.
 
+Also has preliminary support for [regular Homebrew
+formulae](http://brew.sh).
 
 INSTALL
 -------
@@ -19,7 +21,7 @@ $ gem install --no-ri --no-rdoc castic
 $ echo "gem 'castic'" >> Gemfile
 $ bundle
 
-$ echo "gem 'castic', '~>0.1.0'" >> Gemfile
+$ echo "gem 'castic', '~>0.2.0'" >> Gemfile
 $ bundle install
 
 $ rvm use 2.0.0
@@ -42,10 +44,13 @@ require 'castic'
 # Load a cask
 c = Castic.new 'foo.rb'
 
+# ...or a formula
+c = Castic.new 'bar.rb', :Formula
+
 c.name          #=> Name according to class name
 c.expected_name #=> Name according to file name
 
-c.tree          #=> Parsed cask
+c.tree          #=> Parsed source
 c.props         #=> Array of properties
 
 c.props :foo    #=> Array of :foo properties
