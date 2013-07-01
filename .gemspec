@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'castic'
-  s.version     = '0.2.0'
+  s.version     = '0.2.1'
   s.date        = Time.new.to_s.split.first
   s.summary     = 'Static parser for Homebrew Cask formulae'
   s.description = s.summary
