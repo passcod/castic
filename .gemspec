@@ -8,4 +8,5 @@ Gem::Specification.new do |s|
   s.email       = 'me@passcod.name'
   s.files       = Dir['lib/**/**.rb']
   s.homepage    = 'https://github.com/passcod/castic'
+  s.add_dependency('parser')
 end
